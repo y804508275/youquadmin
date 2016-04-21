@@ -1,0 +1,111 @@
+.row-title{
+    border-left:5px solid dodgerblue;
+    margin-left: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+.row-title span{
+    margin-left: 8px;
+    font-size: 20px;
+}
+.row-title .glyphicon{
+    float: right;
+}
+.thumbnail{
+    overflow: hidden;
+    cursor: pointer;
+}
+.bottom-btn{
+    width: 95%;
+    margin-left: 2.5%;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid dodgerblue;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    cursor: pointer;
+}
+.bottom-footer{
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: aliceblue;
+    color: dodgerblue;
+    text-align: center;
+}
+#menu{
+    width: 100%;
+    background-color: white;
+    height: 0px;
+    overflow: hidden;
+}
+#menu .menuHead{
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+}
+#menu .menuList{
+    width: 100%;
+    margin-bottom: 20px;
+}
+/*        activity.html        */
+
+.header{
+    width: 100%;
+
+    background-image: url("../images/head.jpg");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    margin-bottom: 50px;
+
+}
+.header-txt{
+    width: 100%;
+
+    display: table;
+    background-color: rgba(0,0,0,0.4);
+}
+@media screen and (min-width: 600px){
+    .header{
+        height: 300px;
+    }
+    .header-txt{
+        height: 300px;
+    }
+    .head-title{
+        font-size: 50px;
+    }
+    .head-note{
+        font-size: 35px;
+    }
+}
+@media screen and (max-width: 600px){
+    .header{
+        height: 200px;
+    }
+    .header-txt{
+        height: 200px;
+    }
+    .head-title{
+        font-size: 35px;
+    }
+    .head-note{
+        font-size: 20px;
+    }
+}
+.header .head-text{
+    width: 100%;
+    height: auto;
+    vertical-align: middle;
+    display: table-cell;
+}
+.header .head-text .head-title{
+
+     color: white;
+ }
+.header .head-text .head-note{
+    color: white;
+}

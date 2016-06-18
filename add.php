@@ -1,44 +1,45 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2016/4/13
- * Time: 20:49
- */
-if(isset($_POST["submit"])&&$_POST["submit"]=="增加类别"){
-    $kind=$_POST["kind"];
 
-    $key="";
-    $pattern='1234567890abcdefghijklmnopqrstuvwxyz';
-    for($i=0;$i<8;$i++){
-        $key.=$pattern[rand(0,35)];
+error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
+$a="addKinds";
+    $b="name";
+    $c="id";
+    if($_GET["addKinds"]){
+        $kind=$_GET["addKinds"];
+
+        $key="";
+        $pattern='1234567890abcdefghijklmnopqrstuvwxyz';
+        for($i=0;$i<8;$i++){
+            $key.=$pattern[rand(0,35)];
+        }
+        $id=$key;
+        $con=mysql_connect("localhost","furui","1013");
+        mysql_select_db("shujuku");
+        mysql_query("SET NAMES 'utf8'");
+
+        $sql="insert into admin(kinds,id)VALUES('$kind','$id')";
+        $res=mysql_query($sql);
+        echo '<div class="row">'.$kind.'</div>
+                    <div class="btn1"><a href="adminList.php?id='.$id.'" target="_blank">管理</a></div>
+                    <div id="add">
+
+                            <input type="text" name="kind" value="" id="name'.$id.'">
+                            <input type="submit" name="'.$id.'" value="重命名" onclick="rename(this)">
+
+
+                    </div>
+                    <br /><br />';
     }
-    $id=$key;
+    if($_GET["name"]){
+        $id=$_GET["id"];
+        $kind=$_GET["name"];
+        $con=mysql_connect("localhost","furui","1013");
+        mysql_select_db("shujuku");
+        mysql_query("SET NAMES 'utf8'");
+        $sql="UPDATE admin SET kinds='$kind' WHERE id='$id'";
+        $res=mysql_query($sql);
+        echo $kind;
+    }
 
-    $con=mysql_connect("localhost","furui","1013");
-    mysql_select_db("upload");
-    mysql_query("SET NAMES 'utf8'");
 
-    $sql="insert into admin(kinds,id)VALUES('$kind','$id')";
-    $res=mysql_query($sql);
-    echo "<script>location.href='admin.php';</script>";
-}
-if(isset($_POST["submit"])&&$_POST["submit"]=="重命名"){
-    $id=$_GET["kindId"];
-
-    $kind=$_POST["kind"];
-    $con=mysql_connect("localhost","furui","1013");
-    mysql_select_db("upload");
-    mysql_query("SET NAMES 'utf8'");
-
-    $sql="UPDATE admin SET kinds='$kind' WHERE id='$id'";
-    $res=mysql_query($sql);
-    echo "<script>location.href='admin.php';</script>";
-}
-$con=mysql_connect("localhost","furui","1013");
-mysql_select_db("upload");
-mysql_query("SET NAMES 'utf8'");
-
-$sql="insert into root(username,password)VALUES('voluntour','123')";
-$res=mysql_query($sql);
 ?>

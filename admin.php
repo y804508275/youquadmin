@@ -3,9 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>The new Page1</title>
-    <script src="js/jquery-1.12.3.min.js">
-
-    </script>
+    <script src="js/jquery-1.12.3.min.js"></script>
     <script type="text/javascript">
         var length1='30%';
         var length2='80%';
@@ -35,22 +33,19 @@
     <?php
     session_start();
     session_unset("id");
-    $con=mysql_connect("localhost","furui","1013");
-    mysql_select_db("upload");
-    mysql_query("SET NAMES 'utf8'");
     $username=$_POST["username"];
     $password=$_POST["password"];
-    $sql="select * from upload.root WHERE username='$username'";
-    $list=mysql_query($sql,$con);
-    while($result=mysql_fetch_array($list)){
+    include('class.all.php');
+    $db=new ConnectDb('localhost','furui','1013','shujuku','utf8');
+    $db->search("select * from shujuku.root WHERE username='$username'");
+    while($result=$db->fetch_array()){
         $pass=$result["password"];
         if($pass==$password){
             $_SESSION["id"]=$pass;
         }
     }
     if(empty($_SESSION["id"])){
-        echo "<script>alert('密码错误');location.href='adminindex.html';</script>";
-//        echo "<script>alert('".$password.$pass."');</script>";
+        echo "<script>alert('密码错误');location.href='index.html';</script>";
     }
     ?>
     <style type="text/css">
@@ -94,6 +89,7 @@
             background-color: #335aa8;
             color:white;
             font-size:38px;
+            z-index:100;
         }
         .div2
         {
@@ -134,11 +130,8 @@
             position:absolute;
         }
         #add{
-            margin-left: 120px;
+            margin-left: 400px;
             padding: 10px 15px;
-            margin-top: 50px;
-
-
         }
     </style>
 </head>
@@ -147,47 +140,25 @@
     <div class="div2">
         <?php
             header("Content-type: text/html; charset=utf-8");
-            /**
-             * Created by PhpStorm.
-             * User: Administrator
-             * Date: 2016/4/11
-             * Time: 18:08
-             */
-
-            $con=mysql_connect("localhost","furui","1013");
-            mysql_select_db("upload");
-            mysql_query("SET NAMES 'utf8'");
-
-
-            $sql="select * from admin";
-
-
-            $list=mysql_query($sql,$con);
-            while($result=mysql_fetch_array($list)){
+            $db=new ConnectDb('localhost','furui','1013','shujuku','utf8');
+            $db->search("select * from admin");
+            while($result=$db->fetch_array()){
                 $kind=$result["kinds"];
                 $id=$result["id"];
-                echo '<div class="row">'.$kind.'</div>
+                echo '<div class="row" id="kindname'.$id.'">'.$kind.'</div>
                     <div class="btn1"><a href="adminList.php?id='.$id.'" target="_blank">管理</a></div>
-                    <br><br>
                     <div id="add">
-                        <form id="" action="add.php?kindId='.$id.'" method="post">
-                            <input type="text" name="kind" >
-                            <input type="submit" name="submit" value="重命名">
-                        </form>
+                            <input type="text" name="kind" value="" id="name'.$id.'">
+                            <input type="submit" name="'.$id.'" value="重命名" onclick="rename(this)">
                     </div>
                     <br /><br />';
             }
         ?>
-
-
+    <div id="result"></div>
     </div>
     <div id="add">
-        <form id="" action="add.php" method="post">
-            <input type="text" name="kind" >
-            <input type="submit" name="submit" value="增加类别">
-        </form>
-
-
+            <input type="text" name="kind" id="kind">
+            <input type="submit" name="submit" id="addKinds" value="增加类别">
     </div>
     <br><br><br>
     <div id="rows">
@@ -197,6 +168,46 @@
         <br><br>
         <span>line3</span><span class="line3"></span>
     </div>
-
+<script>
+    document.getElementById("addKinds").onclick=function(){
+    	if (document.getElementById("kind").value) {
+    		var request=new XMLHttpRequest();
+	        request.open("GET","add.php?addKinds="+document.getElementById("kind").value);
+	        request.send();
+	        request.onreadystatechange=function(){
+	            if(request.readyState==4){
+	                if(request.status===200){
+	                    document.getElementById("result").innerHTML+=request.responseText;
+	                    document.getElementById("kind").value="";
+	                }else{
+	                    alert("失败");
+	                }
+	            }
+        	}
+    	}else{
+    		alert("请输入名称");
+    	}
+        
+    };
+    function rename(obj){
+    	if (document.getElementById("name"+obj.name).value) {
+	        var request=new XMLHttpRequest();
+	        request.open("GET","add.php?name="+document.getElementById("name"+obj.name).value+"&id="+obj.name);
+	        request.send();
+	        request.onreadystatechange=function(){
+	            if(request.readyState==4){
+	                if(request.status===200){
+	                    document.getElementById("kindname"+obj.name).innerHTML=request.responseText;
+	                    document.getElementById("name"+obj.name).value="";
+	                }else{
+	                    alert("失败");
+	                }
+	            }
+	        }
+	    }else{
+	    	alert("请输入名称");
+	    }
+    }
+</script>
 </body>
 </html>

@@ -7,7 +7,7 @@ header("Content-type: text/html; charset=utf-8");
  * Date: 2016/4/7
  * Time: 0:09
  */
-
+error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
 $pic_path='upload';
 $kindId=$_GET["kindId"];
 if(!file_exists($pic_path)){
@@ -64,7 +64,7 @@ if(isset($_POST["submit"])&&$_POST["submit"]=="提交"){
 
 
 
-
+    $add_time=time();
     $test1 = addslashes($pic1);
     $test2 = addslashes($pic2);
     $test3 = addslashes($pic3);
@@ -74,12 +74,12 @@ if(isset($_POST["submit"])&&$_POST["submit"]=="提交"){
     $password="1013";
     $con=mysql_connect("localhost","furui","1013");
 
-    mysql_select_db("upload");
+    mysql_select_db("shujuku");
     mysql_query("SET NAMES 'utf8'");
 
 
-    $mysql_insert="insert into upload_table(title,sub_title,activity_time,price,host,activity_info,place,placeX,placeY,place_info,phone,weixin,pic1,pic2,pic3,id,show_state,kindId)
-VALUES('$title','$sub_title','$activity_time','$price','$host','$activity_info','$place','$placeX','$placeY','$place_info','$phone','$weixin','$pic1','$pic2','$pic3','$id','$show_state','$kindId') ;";
+    $mysql_insert="insert into upload_table(title,sub_title,activity_time,price,host,activity_info,place,placeX,placeY,place_info,phone,weixin,pic1,pic2,pic3,id,show_state,kindId,add_time)
+VALUES('$title','$sub_title','$activity_time','$price','$host','$activity_info','$place','$placeX','$placeY','$place_info','$phone','$weixin','$pic1','$pic2','$pic3','$id','$show_state','$kindId','$add_time') ;";
     $res_insert=mysql_query($mysql_insert);
     echo "<script>alert('发布成功');location.href='adminList.php?id=".$kindId."';</script>";
 

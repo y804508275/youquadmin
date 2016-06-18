@@ -6,9 +6,10 @@
     <title>The 3rd Page3</title>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=5doOBpnqfkYzGUuFwrOnftldguOmDiMC"></script>
     <?php
+    error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
     session_start();
     if(empty($_SESSION["id"])){
-        echo "<script>alert('请先登录');location.href='adminindex.html';</script>";
+        echo "<script>alert('请先登录');location.href='index.html';</script>";
 //        echo "<script>alert('".$password.$pass."');</script>";
     }
     ?>
@@ -58,13 +59,13 @@
     -->
 
     <input type="file" name="file1" onchange="readfile(this)">
-    <img src="" id="pic1" width="500px">
+
     <br>
     <input type="file" name="file2" onchange="readfile(this)">
-    <img src="" id="pic2" width="500px">
+
     <br>
     <input type="file" name="file3" onchange="readfile(this)">
-    <img src="" id="pic3" width="500px">
+
     <br>
     <br>
 
@@ -88,11 +89,11 @@ header("Content-type: text/html; charset=utf-8");
  * Date: 2016/4/11
  * Time: 19:32
  */
-
+error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
 $kindId=$_GET["kindId"];
 echo "<script>document.getElementById('form').action='".htmlspecialchars($_SERVER["PHP_SELF"])."?kindId=".$kindId."';</script>";
 $con=mysql_connect("localhost","furui","1013");
-mysql_select_db("upload");
+mysql_select_db("shujuku");
 mysql_query("SET NAMES 'utf8'");
 
 $id=$_GET["id"];
@@ -135,21 +136,21 @@ while($result=mysql_fetch_array($details)){
         "</script>";
 
 
-    if($pic1!="0"){
-        echo "<script>document.getElementById('pic1').setAttribute('src','".$pic1."');</script>";
-    }else{
-        echo "<script>document.getElementById('pic1').style.display='none';</script>";
-    }
-    if($pic2!="0"){
-        echo "<script>document.getElementById('pic2').setAttribute('src','".$pic2."');</script>";
-    }else{
-        echo "<script>document.getElementById('pic2').style.display='none';</script>";
-    }
-    if($pic3!="0") {
-        echo "<script>document.getElementById('pic3').setAttribute('src','" . $pic3 . "');</script>";
-    }else{
-        echo "<script>document.getElementById('pic3').style.display='none';</script>";
-    }
+//    if($pic1!="0"){
+//        echo "<script>document.getElementById('pic1').setAttribute('src','".$pic1."');</script>";
+//    }else{
+//        echo "<script>document.getElementById('pic1').style.display='none';</script>";
+//    }
+//    if($pic2!="0"){
+//        echo "<script>document.getElementById('pic2').setAttribute('src','".$pic2."');</script>";
+//    }else{
+//        echo "<script>document.getElementById('pic2').style.display='none';</script>";
+//    }
+//    if($pic3!="0") {
+//        echo "<script>document.getElementById('pic3').setAttribute('src','" . $pic3 . "');</script>";
+//    }else{
+//        echo "<script>document.getElementById('pic3').style.display='none';</script>";
+//    }
 
     if($show_state=="不显示"){
         echo "<script>document.getElementById('show').checked=false;document.getElementById('unshow').checked=true;</script>";
@@ -300,7 +301,7 @@ header("Content-type: text/html; charset=utf-8");
  * Date: 2016/4/7
  * Time: 0:09
  */
-
+error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
 $kindId=$_GET["kindId"];
 $pic_path='upload';
 if(!file_exists($pic_path)){
@@ -308,7 +309,7 @@ if(!file_exists($pic_path)){
 }
 $con=mysql_connect("localhost","furui","1013");
 
-mysql_select_db("upload");
+mysql_select_db("shujuku");
 mysql_query("SET NAMES 'utf8'");
 
 $id=$_GET["id"];
@@ -364,7 +365,7 @@ if(isset($_POST["submit"])&&$_POST["submit"]=="提交"){
             $pic_path."/" . $_FILES["file3"]["name"]);
     }
 
-
+    $add_time=time();
     $test1 = addslashes($pic1);
     $test2 = addslashes($pic2);
     $test3 = addslashes($pic3);
@@ -379,11 +380,11 @@ if(isset($_POST["submit"])&&$_POST["submit"]=="提交"){
     mysql_query("SET NAMES 'utf8'");
 
 
-    $sql_insert="UPDATE upload_table SET title ='$title',sub_title='$sub_title',activity_time='$activity_time',price='$price',host='$host',activity_info='$activity_info',place='$place',placeX='$placeX',placeY='$placeY',place_info='$place_info',phone='$phone',weixin='$weixin',pic1='$pic1',pic2='$pic2',pic3='$pic3',show_state='$show_state' WHERE id='$id'";
+    $sql_insert="UPDATE upload_table SET title ='$title',sub_title='$sub_title',activity_time='$activity_time',price='$price',host='$host',activity_info='$activity_info',place='$place',placeX='$placeX',placeY='$placeY',place_info='$place_info',phone='$phone',weixin='$weixin',pic1='$pic1',pic2='$pic2',pic3='$pic3',show_state='$show_state',$add_time='$add_time' WHERE id='$id'";
 
     $res_insert=mysql_query($sql_insert);
 
-    echo "<script>alert('".$kindId."');location.href='adminList.php?id=".$kindId."';</script>";
+    echo "<script>alert('修改成功');location.href='adminList.php?id=".$kindId."';</script>";
 
 
 }

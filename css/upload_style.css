@@ -41,7 +41,10 @@
     width:31px;
     height:31px;
 }
-#activity_info{
+#activity_info1{
+    visibility: hidden;
+}
+#activity_info2{
     visibility: hidden;
 }
 .btn_upload_pictures

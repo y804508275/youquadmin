@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>The new Page2</title>
     <?php
+    error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
     session_start();
     if(empty($_SESSION["id"])){
-        echo "<script>alert('请先登录');location.href='adminindex.html';</script>";
+        echo "<script>alert('请先登录');location.href='index.html';</script>";
 //        echo "<script>alert('".$password.$pass."');</script>";
     }
     ?>
@@ -117,30 +118,49 @@ header("Content-type: text/html; charset=utf-8");
 $kindId=$_GET["id"];
 echo "<script>document.getElementById('inputId').value='".$kindId."'</script>";
 $con=mysql_connect("localhost","furui","1013");
-mysql_select_db("upload");
+mysql_select_db("shujuku");
 mysql_query("SET NAMES 'utf8'");
 
-$sql="select * from upload.upload_table WHERE kindId='".$kindId."'";
+    $sql="select * from shujuku.citywalk WHERE kindId='".$kindId."'";
 
 
-$list=mysql_query($sql,$con);
-while($result=mysql_fetch_array($list)){
-    $title=$result["title"];
-    $id=$result["id"];
+    $list=mysql_query($sql,$con);
+    while($result=mysql_fetch_array($list)){
+        $title=$result["title"];
+        $id=$result["id"];
+        $ifTop=$result["ifTop"];
 
     echo '<div class="row">'.$title.'</div>
     <div class="btn2"><a href="">删除</a></div>
-    <div class="btn1" onclick="location.href=\'revise.php?id='.$id.'&kindId='.$kindId.'\'"><a href="revise.php?id='.$id.'&kindId='.$kindId.'" target="_blank">更改</a></div>
-    <br /><br /><hr>';
-    echo '<a href="details.php?id='.$id.'">'.$title.'</a><br>';
-}
+    <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>';
+    if($ifTop=="1"){
+        echo'<div class="btn1" id="'.$id.'" onclick="onTop(this)">取消置顶</div>
+        <br /><br /><hr>';
+    }else{
+        echo'<div class="btn1" id="'.$id.'" onclick="onTop(this)">置顶</div>
+        <br /><br /><hr>';
+    }
+    
+    echo '<a href="details.php?id='.$id.'">'.$title.'</a><br>';}
+
+
+
+
 mysql_free_result($list);
 mysql_close($con);
 
+if($kindId=="mdjprv4b"){
+    echo  '</div>
+        <p id="result"> </p>
+        <div class="btncfm" onclick="location.href=\'citywalk.php?kindId='.$kindId.'\'">发布新活动</div>';
+}
 
-echo  '</div>
-<p id="result"> </p>
-<div class="btncfm" onclick="location.href=\'upload.php?kindId='.$kindId.'\'"><a href="upload.php?kindId='.$kindId.'" target="_blank">发布新活动</a></div>';
+else{
+    echo  '</div>
+        <p id="result"> </p>
+        <div class="btncfm" onclick="location.href=\'citywalk.php?kindId='.$kindId.'\'">发布新活动</div>';
+}
+
 ?>
 <script>
 
@@ -153,6 +173,26 @@ echo  '</div>
                 if(request.status===200){
                     document.getElementById("result").innerHTML=request.responseText;
                     document.getElementById("div2").style.display="none";
+                }else{
+                    alert("失败");
+                }
+            }
+        }
+    }
+    function onTop(obj){
+       
+        var request=new XMLHttpRequest();
+        request.open("GET","ontop.php?id="+obj.id);
+        request.send();
+        request.onreadystatechange=function(){
+            if(request.readyState==4){
+                if(request.status===200){
+                    if (obj.innerHTML=='置顶') {
+                        obj.innerHTML="取消置顶";
+                    }else{
+                        obj.innerHTML="置顶";
+                    }
+                    
                 }else{
                     alert("失败");
                 }

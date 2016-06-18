@@ -7,24 +7,41 @@ header("Content-type: text/html; charset=utf-8");
  * @version 1.0 2010-11-09
  *
  */
+error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
 $search=$_GET["search"];
 $kindId=$_GET["kindId"];
 $sear=Detach::dualDecom($search);
 
 $con=mysql_connect("localhost","furui","1013");
-mysql_select_db("upload");
+mysql_select_db("shujuku");
 mysql_query("SET NAMES 'utf8'");
 
-$sql="SELECT * FROM upload.upload_table WHERE kindId ='".$kindId."' AND title LIKE '%".$sear[0]."%'";
-$list=mysql_query($sql,$con);
-while($result=mysql_fetch_array($list)){
-    $title=$result["title"];
-    $id=$result["id"];
 
-    echo '<div class="div2"><div class="row">'.$title.'</div>
-    <div class="btn2"><a href="">删除</a></div>
-    <div class="btn1" onclick="location.href=\'revise.php?id='.$id.'\'"><a href="revise.php?id='.$id.'" target="_blank">更改</a></div>
-    <br /><br /><hr></div>';
+    $sql="SELECT * FROM shujuku.citywalk WHERE kindId ='".$kindId."' AND title LIKE '%".$sear[0]."%'";
+
+
+    $list=mysql_query($sql,$con);
+    while($result=mysql_fetch_array($list)){
+        $title=$result["title"];
+        $id=$result["id"];
+        $ifTop=$result["ifTop"];
+        if($ifTop=="1"){
+        echo'<div class="row">'.$title.'</div>
+            <div class="btn2"><a href="">删除</a></div>
+            <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>
+            <div class="btn1" id="'.$id.'" onclick="onTop(this)">取消置顶</div>
+                <br /><br /><hr>';
+    }else{
+        echo'<div class="div2"><div class="row">'.$title.'</div>
+            <div class="btn2"><a href="">删除</a></div>
+            <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>
+            <div class="btn1" id="'.$id.'" onclick="onTop(this)">置顶</div>
+                <br /><br /><hr>';
+    }
+    // echo '<div class="div2"><div class="row">'.$title.'</div>
+    // <div class="btn2"><a href="">删除</a></div>
+    // <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>
+    // <br /><br /><hr></div>';
 }
 
 

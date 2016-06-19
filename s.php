@@ -1,42 +1,30 @@
 <?php
-header("Content-type: text/html; charset=utf-8");
-/**
- *
- * <p>对传入的内容进行分词utf-8编码</p>
- * @author yichen
- * @version 1.0 2010-11-09
- *
- */
-error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
-$search=$_GET["search"];
-$kindId=$_GET["kindId"];
-$sear=Detach::dualDecom($search);
+    header("Content-type: text/html; charset=utf-8");
+    error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
+    $search=$_GET["search"];
+    $kindId=$_GET["kindId"];
+    $sear=Detach::dualDecom($search);
 
-$con=mysql_connect("localhost","furui","1013");
-mysql_select_db("shujuku");
-mysql_query("SET NAMES 'utf8'");
-
-
+    include 'autoload.php';
+    $db=new ConnectDb('localhost','furui','1013','shujuku','utf8');
     $sql="SELECT * FROM shujuku.citywalk WHERE kindId ='".$kindId."' AND title LIKE '%".$sear[0]."%'";
-
-
-    $list=mysql_query($sql,$con);
-    while($result=mysql_fetch_array($list)){
+    $db->search($sql);
+    while($result=$db->fetch_array()){
         $title=$result["title"];
         $id=$result["id"];
         $ifTop=$result["ifTop"];
         if($ifTop=="1"){
-        echo'<div class="row">'.$title.'</div>
+        echo'<div class="div2"><div class="row">'.$title.'</div>
             <div class="btn2"><a href="">删除</a></div>
             <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>
             <div class="btn1" id="'.$id.'" onclick="onTop(this)">取消置顶</div>
-                <br /><br /><hr>';
+                <br /><br /><hr></div>';
     }else{
         echo'<div class="div2"><div class="row">'.$title.'</div>
             <div class="btn2"><a href="">删除</a></div>
             <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>
             <div class="btn1" id="'.$id.'" onclick="onTop(this)">置顶</div>
-                <br /><br /><hr>';
+                <br /><br /><hr></div>';
     }
     // echo '<div class="div2"><div class="row">'.$title.'</div>
     // <div class="btn2"><a href="">删除</a></div>
@@ -92,8 +80,6 @@ class Detach{
                 }
                 $oldsw=$sw;
             }
-
-
         }
         //去掉连续的空格
         $ar_str = trim(preg_replace("# {1,}#i"," ",$ar_str));
@@ -105,7 +91,4 @@ class Detach{
         return $rst;
     }
 }
-
-
-
 ?>

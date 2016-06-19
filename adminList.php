@@ -5,11 +5,8 @@
     <title>The new Page2</title>
     <?php
     error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
-    session_start();
-    if(empty($_SESSION["id"])){
-        echo "<script>alert('请先登录');location.href='index.html';</script>";
-//        echo "<script>alert('".$password.$pass."');</script>";
-    }
+    include 'autoload.php';
+    $ifLogin=new IfLogin;
     ?>
     <style type="text/css">
         a
@@ -106,64 +103,31 @@
 <div class="div2" id="div2">
 
 <?php
-header("Content-type: text/html; charset=utf-8");
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2016/4/11
- * Time: 18:08
- */
-
-
-$kindId=$_GET["id"];
-echo "<script>document.getElementById('inputId').value='".$kindId."'</script>";
-$con=mysql_connect("localhost","furui","1013");
-mysql_select_db("shujuku");
-mysql_query("SET NAMES 'utf8'");
-
-    $sql="select * from shujuku.citywalk WHERE kindId='".$kindId."'";
-
-
-    $list=mysql_query($sql,$con);
-    while($result=mysql_fetch_array($list)){
+    header("Content-type: text/html; charset=utf-8");
+    $kindId=$_GET["id"];
+    echo "<script>document.getElementById('inputId').value='".$kindId."'</script>";
+    $db=new ConnectDb('localhost','furui','1013','shujuku','utf8');
+    $db->search("select * from shujuku.citywalk WHERE kindId='".$kindId."'");
+    while($result=$db->fetch_array()){
         $title=$result["title"];
         $id=$result["id"];
         $ifTop=$result["ifTop"];
-
-    echo '<div class="row">'.$title.'</div>
-    <div class="btn2"><a href="">删除</a></div>
-    <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>';
-    if($ifTop=="1"){
-        echo'<div class="btn1" id="'.$id.'" onclick="onTop(this)">取消置顶</div>
-        <br /><br /><hr>';
-    }else{
-        echo'<div class="btn1" id="'.$id.'" onclick="onTop(this)">置顶</div>
-        <br /><br /><hr>';
+        echo '<div class="row">'.$title.'</div>
+        <div class="btn2"><a href="">删除</a></div>
+        <div class="btn1" onclick="location.href=\'citywalk.php?id='.$id.'&kindId='.$kindId.'&action=change\'">更改</div>';
+        if($ifTop=="1"){
+            echo'<div class="btn1" id="'.$id.'" onclick="onTop(this)">取消置顶</div>
+            <br /><br /><hr>';
+        }else{
+            echo'<div class="btn1" id="'.$id.'" onclick="onTop(this)">置顶</div>
+            <br /><br /><hr>';
+        }          
     }
-    
-    echo '<a href="details.php?id='.$id.'">'.$title.'</a><br>';}
-
-
-
-
-mysql_free_result($list);
-mysql_close($con);
-
-if($kindId=="mdjprv4b"){
     echo  '</div>
         <p id="result"> </p>
         <div class="btncfm" onclick="location.href=\'citywalk.php?kindId='.$kindId.'\'">发布新活动</div>';
-}
-
-else{
-    echo  '</div>
-        <p id="result"> </p>
-        <div class="btncfm" onclick="location.href=\'citywalk.php?kindId='.$kindId.'\'">发布新活动</div>';
-}
-
 ?>
 <script>
-
     document.getElementById("search").oninput=function(){
         var request=new XMLHttpRequest();
         request.open("GET","s.php?search="+document.getElementById("search").value+"&kindId="+document.getElementById('inputId').value);
@@ -191,8 +155,7 @@ else{
                         obj.innerHTML="取消置顶";
                     }else{
                         obj.innerHTML="置顶";
-                    }
-                    
+                    }                    
                 }else{
                     alert("失败");
                 }

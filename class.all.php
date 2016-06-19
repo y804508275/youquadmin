@@ -15,19 +15,4 @@
 			return mysql_fetch_array($this->queryid);
 		}
 	}
-	class EchoList{
-		public function __construct($citywalkid,$pic1,$title,$price,$place){
-			echo '<div class="activity" onclick="location.href=\'activity.php?id='.$citywalkid.'\'">
-                    <div class="activityImg">
-                        <img src="'.$pic1.'">
-                    </div>
-                    <div class="activityNote" >
-                        <div class="activityNoteLeft">
-                            <p class="activityTitle">'.$title.'</p><span class="price">￥'.$price.'</span>
-                            <br><span class="subNote">'.$place.'</span>
-                        </div>
-                    </div>
-                 </div>';
-		}
-	}
 ?>

@@ -85,14 +85,10 @@
         <option value="">请选择城市</option>
         <?php
             error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
-            $con=mysql_connect("localhost","furui","1013");
-            mysql_select_db("shujuku");
-            mysql_query("SET NAMES 'utf8'");
-
-            $sql="select * from city";
-
-            $list=mysql_query($sql,$con);
-            while($result=mysql_fetch_array($list)){
+            include 'autoload.php';
+            $db=new ConnectDb('localhost','furui','1013','shujuku','utf8');
+            $db->search("select * from city");
+            while($result=$db->fetch_array()){
                 $cityname=$result["cityName"];
                 $id=$result["cityId"];
                 echo '<option value="'.$id.'">'.$cityname.'</option>';
@@ -122,15 +118,11 @@
     <br>参加人数(只填写阿拉伯数字)<br>最少<input type="text" name="minNum" id="minNum" width="30px">最多<input type="text" name="maxNum" id="maxNum" width="30px">
     <div style="width:100%;">
         <h1>活动详情</h1>
-        <script id="editor" type="text/plain" style="width:100%;height:500px;"><?php $con=mysql_connect("localhost","furui","1013");
-    mysql_select_db("shujuku");
-    mysql_query("SET NAMES 'utf8'");
-
+        <script id="editor" type="text/plain" style="width:100%;height:500px;"><?php 
     $id=$_GET["id"];
     if($_GET["id"]){
-    	$sql="select * from shujuku.citywalk WHERE id='".$id."'";
-
-    	$details=mysql_query($sql,$con);while($result=mysql_fetch_array($details)){if($result{"text_info"})echo $result["text_info"];}
+    	$db->search("select * from shujuku.citywalk WHERE id='".$id."'");
+    	while($result=$db->fetch_array()){if($result{"text_info"})echo $result["text_info"];}
     }
     ?></script>
     </div>
@@ -253,11 +245,7 @@
             }
             inputPare.insertBefore(img,event.nextSibling);
             inputPare.insertBefore(del,event.nextSibling);
-
-
         }
-
-
     }
     function delimg(obj){
         var delObj=obj.previousSibling;
@@ -266,10 +254,7 @@
         pare.removeChild(obj.nextSibling);
         pare.removeChild(obj);
     }
-    
-
-    function submit_click(){                             //点击提交按钮进行验证，验证无误进行提交
-    	
+    function submit_click(){                             //点击提交按钮进行验证，验证无误进行提交   	
         document.getElementById("activity_info1").value=document.getElementById("activity_text1").value;
         document.getElementById("activity_info2").value=document.getElementById("activity_text2").value;
         document.getElementById("text_info").value=UE.getEditor('editor').getContent();
@@ -290,17 +275,13 @@
                 if(input[n].value==arr[n]){
                     if(input[n].value==arr[n]){
                         alert("请补全"+arr[n]);
-
                     }
-
                     break;
                 }
-
                 if(n==input.length-5)
                     x=1;
             }
             if(x==1){
-
                 document.getElementById("submit").click();
             }
         }
@@ -361,24 +342,13 @@
 </script>
 <?php
 error_reporting(E_ALL&~(E_WARNING | E_NOTICE));
-session_start();
+$ifLogin=new ifLogin;
 $kindId=$_GET["kindId"];
-if(empty($_SESSION["id"])){
-    echo "<script>alert('请先登录');location.href='index.html';</script>";
-//        echo "<script>alert('".$password.$pass."');</script>";
-}
 if($_GET["action"]&&$_GET["action"]=='change'){
-
-    $con=mysql_connect("localhost","furui","1013");
-    mysql_select_db("shujuku");
-    mysql_query("SET NAMES 'utf8'");
-
+    
     $id=$_GET["id"];
-    $sql="select * from shujuku.citywalk WHERE id='".$id."'";
-
-    $details=mysql_query($sql,$con);
-
-    while($result=mysql_fetch_array($details)){
+    $db->search("select * from shujuku.citywalk WHERE id='".$id."'");
+    while($result=$db->fetch_array()){
         $title=$result["title"];
         $activity_time=$result["activity_time"];
         $price=$result["price"];
@@ -506,16 +476,9 @@ if(isset($_POST["submit"])&&$_POST["submit"]=="提交"){
     $newpic3="0";
 
     if($_GET["action"]&&$_GET["action"]=='change'){
-        $con=mysql_connect("localhost","furui","1013");
-
-        mysql_select_db("shujuku");
-        mysql_query("SET NAMES 'utf8'");
         $i=$_GET["id"];
-        $sql="select * from citywalk WHERE id='".$i."'";
-
-        $details=mysql_query($sql,$con);
-
-        while($result=mysql_fetch_array($details)){
+        $db->search("select * from citywalk WHERE id='".$i."'");
+        while($result=$db->fetch_array()){
             $newpic1=$result["pic1"];
             $newpic2=$result["pic2"];
             $newpic3=$result["pic3"];
@@ -566,13 +529,6 @@ if($_GET["action"]&&$_GET["action"]=='change'){
 VALUES('$title','$activity_time','$time','$price','$activity_info1','$activity_info2','$place','$placeX','$placeY','$place_info','$weixin','$pic1','$pic2','$pic3','$id','$show_state','$kindId','$pay_link','$text_info','$city','$minNum','$maxNum','$time','$price_include') ;";
     $res_insert=mysql_query($mysql_insert);
 }
-
-
     echo "<script>alert('发布成功');location.href='adminList.php?id=".$kindId."';</script>";
-
-
 }
-
-
-
 ?>

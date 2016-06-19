@@ -33,9 +33,10 @@
     <?php
     session_start();
     session_unset("id");
+    include 'autoload.php';
     $username=$_POST["username"];
     $password=$_POST["password"];
-    include('class.all.php');
+    
     $db=new ConnectDb('localhost','furui','1013','shujuku','utf8');
     $db->search("select * from shujuku.root WHERE username='$username'");
     while($result=$db->fetch_array()){
